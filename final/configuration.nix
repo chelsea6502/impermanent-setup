@@ -190,10 +190,10 @@ in
     let
       persistentHomesRoot = "/persist";
 
-      listOfCommands = l.mapAttrsToList
+      listOfCommands = lib.mapAttrsToList
         (_: user:
           let
-            userHome = l.escapeShellArg (persistentHomesRoot + user.home);
+            userHome = lib.escapeShellArg (persistentHomesRoot + user.home);
 
           in
           ''
@@ -206,7 +206,7 @@ in
         )
         (l.filterAttrs (_: user: user.createHome == true) config.users.users);
 
-      stringOfCommands = l.concatLines listOfCommands;
+      stringOfCommands = lib.concatLines listOfCommands;
     in
     {
       script = stringOfCommands;
