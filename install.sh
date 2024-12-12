@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 curl https://raw.githubusercontent.com/chelsea6502/impermanent-setup/main/final/disko.nix -o /tmp/disko.nix
 
@@ -12,4 +12,4 @@ sudo rm configuration.nix
 
 sudo nix --experimental-features "nix-command flakes" flake init --template github:chelsea6502/impermanent-setup
 
-nixos-install --root /mnt --flake /mnt/etc/nixos#final
+nixos-install --root /mnt --flake /mnt/etc/nixos#nixos
