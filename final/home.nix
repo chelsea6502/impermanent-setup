@@ -1,9 +1,7 @@
 { pkgs, inputs, ... }:
 
 {
-  imports = [
-    inputs.impermanence.nixosModules.home-manager.impermanence
-  ];
+  #imports = [ inputs.impermanence.nixosModules.home-manager.impermanence ];
 
   home.stateVersion = "24.11";
   programs.home-manager.enable = true;
