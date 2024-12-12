@@ -8,7 +8,7 @@ let
       ./dwl/patches/autostart.patch
       ./dwl/patches/unclutter.patch
       #./dwl/patches/smartborders.patch
-      ./dwl/patches/gaps.patch
+      ##./dwl/patches/gaps.patch
     ];
   }));
   patchedSlstatus = (pkgs.slstatus.overrideAttrs
@@ -89,7 +89,7 @@ in
 
   security.polkit.enable = true;
   stylix.enable = true;
-  stylix.image = ./dwl/wallpaper.png;
+  stylix.image = ./dwl/wallpaper.jpg;
 
   stylix.base16Scheme =
     "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
