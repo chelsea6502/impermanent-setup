@@ -124,6 +124,7 @@ in
   users.users.chelsea = {
     isNormalUser = true;
     description = "chelsea";
+    initialPassword = "blah";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [ qutebrowser wmenu patchedDwl patchedSlstatus ];
   };
