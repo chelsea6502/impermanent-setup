@@ -6,7 +6,7 @@
   ];
 
   home.homeDirectory = "/home/chelsea";
-  home.stateVersion = "24.05";
+  home.stateVersion = "24.11";
   programs.home-manager.enable = true;
   programs.qutebrowser.enable = true;
   programs.foot.enable = true;
