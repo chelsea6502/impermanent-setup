@@ -204,7 +204,7 @@ in
             fi
           ''
         )
-        (l.filterAttrs (_: user: user.createHome == true) config.users.users);
+        (lib.filterAttrs (_: user: user.createHome == true) config.users.users);
 
       stringOfCommands = lib.concatLines listOfCommands;
     in
