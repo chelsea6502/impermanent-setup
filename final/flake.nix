@@ -1,37 +1,36 @@
 {
   description = "Nixos config flake";
-     
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # impermanence = {
-    #   url = "github:nix-community/impermanence";
-    # };
-
-    # home-manager = {
-    #   url = "github:nix-community/home-manager";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
+    impermanence.url = "github:nix-community/impermanence";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    home-manager.url = "github:nix-community/home-manager/release-24.11";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    stylix.url = "github:danth/stylix/release-24.11";
+    stylix.inputs.nixpkgs.follows = "nixpkgs";
+    nixvim.url = "github:nix-community/nixvim/nixos-24.11";
+    nixvim.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = {nixpkgs, ...} @ inputs:
-  {
-    nixosConfigurations.default = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs;};
-      modules = [
-        inputs.disko.nixosModules.default
-        (import ./disko.nix { device = "/dev/vda"; })
+  outputs = { nixpkgs, ... } @ inputs:
+    {
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
 
-        ./configuration.nix
-              
-        # inputs.home-manager.nixosModules.default
-        # inputs.impermanence.nixosModules.impermanence
-      ];
+        specialArgs = { inherit inputs; };
+        modules = [
+          inputs.disko.nixosModules.default
+          (import ./disko.nix { device = "/dev/vda"; })
+
+          ./configuration.nix
+          inputs.home-manager.nixosModules.home-manager
+          inputs.stylix.nixosModules.stylix
+          inputs.nixvim.nixosModules.nixvim
+          inputs.impermanence.nixosModules.impermanence
+        ];
+      };
     };
-  };
 }
