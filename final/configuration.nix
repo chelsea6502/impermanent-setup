@@ -7,8 +7,8 @@ let
       ./dwl/patches/bar.patch
       ./dwl/patches/autostart.patch
       ./dwl/patches/unclutter.patch
-      ./dwl/patches/smartborders.patch
-      #./dwl/patches/gaps.patch
+      #./dwl/patches/smartborders.patch
+      ./dwl/patches/gaps.patch
     ];
   }));
   patchedSlstatus = (pkgs.slstatus.overrideAttrs
