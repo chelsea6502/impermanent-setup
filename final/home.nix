@@ -5,7 +5,6 @@
     inputs.impermanence.nixosModules.home-manager.impermanence
   ];
 
-  home.homeDirectory = "/home/chelsea";
   home.stateVersion = "24.11";
   programs.home-manager.enable = true;
   programs.qutebrowser.enable = true;
@@ -30,28 +29,4 @@
 
   stylix.autoEnable = true;
 
-
-  home.persistence."/persist/home" = {
-    directories = [
-      #"Downloads"
-      #"Music"
-      #"Pictures"
-      #"Documents"
-      #"Videos"
-      #"VirtualBox VMs"
-      ".gnupg"
-      ".ssh"
-      ".nixops"
-      ".local/share/keyrings"
-      ".local/share/direnv"
-      #{
-      #  directory = ".local/share/Steam";
-      #  method = "symlink";
-      #}
-    ];
-    files = [
-      ".screenrc"
-    ];
-    allowOther = true;
-  };
 }

@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, ... }:
+{ pkgs, lib, inputs, config, ... }:
 let
   patchedDwl = (pkgs.dwl.overrideAttrs (old: rec {
     buildInputs = old.buildInputs ++ [ pkgs.fcft pkgs.pixman pkgs.libdrm ];
@@ -29,6 +29,7 @@ in
   boot.kernelParams = [ "video=3840x2160@60" ];
   hardware.display.outputs.DP-2.mode = "3840x2160@60";
 
+  fileSystems."/persist".neededForBoot = true;
   programs.bash.shellAliases = {
     edit = "sudo -E -s nvim";
     find = "sudo -E -s ranger";
@@ -127,6 +128,7 @@ in
     initialPassword = "blah";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [ qutebrowser wmenu patchedDwl patchedSlstatus ];
+
   };
 
   services.greetd = {
@@ -167,65 +169,41 @@ in
     umount /btrfs_tmp
   '';
 
-  fileSystems."/persist".neededForBoot = true;
-  environment.persistence."/persist/system" = {
+  environment.persistence."/persistent" = {
+    enable = true; # NB: Defaults to true, not needed
     hideMounts = true;
     directories = [
-      "/etc/nixos"
       "/var/log"
+      "/var/lib/bluetooth"
       "/var/lib/nixos"
       "/var/lib/systemd/coredump"
       "/etc/NetworkManager/system-connections"
-      #{ directory = "/var/lib/colord"; user = "colord"; group = "colord"; mode = "u=rwx,g=rx,o="; }
+      { directory = "/var/lib/colord"; user = "colord"; group = "colord"; mode = "u=rwx,g=rx,o="; }
     ];
     files = [
       "/etc/machine-id"
-      # { file = "/var/keys/secret_file"; parentDirectory = { mode = "u=rwx,g=,o="; }; }
+      { file = "/var/keys/secret_file"; parentDirectory = { mode = "u=rwx,g=,o="; }; }
     ];
+    users.chelsea = {
+      directories = [
+        "Downloads"
+        "Music"
+        "Pictures"
+        "Documents"
+        "Videos"
+        "VirtualBox VMs"
+        { directory = ".gnupg"; mode = "0700"; }
+        { directory = ".ssh"; mode = "0700"; }
+        { directory = ".nixops"; mode = "0700"; }
+        { directory = ".local/share/keyrings"; mode = "0700"; }
+        ".local/share/direnv"
+      ];
+      files = [
+        ".screenrc"
+      ];
+    };
   };
 
   programs.fuse.userAllowOther = true;
-
-  systemd.services."persist-home-create-root-paths" =
-    let
-      persistentHomesRoot = "/persist";
-
-      listOfCommands = lib.mapAttrsToList
-        (_: user:
-          let
-            userHome = lib.escapeShellArg (persistentHomesRoot + user.home);
-
-          in
-          ''
-            if [[ ! -d ${userHome} ]]; then
-                echo "Persistent home root folder '${userHome}' not found, creating..."
-                mkdir -p --mode=${user.homeMode} ${userHome}
-                chown ${user.name}:${user.group} ${userHome}
-            fi
-          ''
-        )
-        (lib.filterAttrs (_: user: user.createHome == true) config.users.users);
-
-      stringOfCommands = lib.concatLines listOfCommands;
-    in
-    {
-      script = stringOfCommands;
-      unitConfig = {
-        Description = "Ensure users' home folders exist in the persistent filesystem";
-        PartOf = [ "local-fs.target" ];
-        # The folder creation should happen after the persistent home path is mounted.
-        After = [ "persist-home.mount" ];
-      };
-
-      serviceConfig = {
-        Type = "oneshot";
-        StandardOutput = "journal";
-        StandardError = "journal";
-      };
-
-      # [Install]
-      wantedBy = [ "local-fs.target" ];
-
-    };
 
 }
