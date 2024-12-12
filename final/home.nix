@@ -31,8 +31,6 @@
   stylix.autoEnable = true;
 
 
-  home.stateVersion = "23.11"; # Please read the comment before changing.
-
   home.persistence."/persist/home" = {
     directories = [
       #"Downloads"

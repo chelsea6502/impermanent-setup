@@ -5,19 +5,14 @@
 
     templates = {
 
-      flakeonly = {
-        path = ./default;
-        description = "Impermanent flake";
-      };
-
-      final = {
+      nixos = {
         path = ./final;
         description = "Impermanent setup";
       };
 
     };
 
-    defaultTemplate = self.templates.final;
+    defaultTemplate = self.templates.nixos;
 
   };
 }
