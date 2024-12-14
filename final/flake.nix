@@ -22,7 +22,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           inputs.disko.nixosModules.default
-          (import ./disko.nix { device = "/dev/sdb"; })
+          (import ./disko.nix { device = "/dev/nvme0n1"; })
 
           ./configuration.nix
           inputs.home-manager.nixosModules.home-manager
